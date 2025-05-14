@@ -1,0 +1,22 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.trusted.packages: com.github.cosminchr.liveeventtrackerservice.dto
+
+event-tracker:
+  external-api:
+    base-url: http://localhost:8081/api
+    event-endpoint: /events/{eventId}
+    connection-timeout: 5000
+    read-timeout: 5000
+  
+  scheduler:
+    polling-interval-ms: 10000
+    max-concurrent-events: 100
+  
+  kafka:
+    event-updates-topic: test-event-updates

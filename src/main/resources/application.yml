@@ -1,0 +1,55 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: live-event-tracker-service
+
+  # Kafka Configuration
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      retries: 3
+      acks: all
+      properties:
+        delivery.timeout.ms: 120000
+        request.timeout.ms: 30000
+        enable.idempotence: false
+        spring.json.add.type.headers: false
+    consumer:
+      group-id: event-tracker-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.github.cosminchr.liveeventtrackerservice.model
+
+  # Kafka auto-configuration enabled
+
+# Application specific configuration
+event-tracker:
+  # External API configuration
+  external-api:
+    base-url: http://localhost:8080/api/mock
+    event-endpoint: /events/{eventId}
+    connection-timeout: 5000
+    read-timeout: 5000
+
+  # Scheduler configuration
+  scheduler:
+    polling-interval-ms: 10000
+    max-concurrent-events: 100
+
+  # Kafka topic configuration
+  kafka:
+    event-updates-topic: event-updates
+
+# Logging configuration
+logging:
+  level:
+    com.github.cosminchr.liveeventtrackerservice: DEBUG
+    org.springframework.scheduling: DEBUG
